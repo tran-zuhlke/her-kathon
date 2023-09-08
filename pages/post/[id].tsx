@@ -1,25 +1,24 @@
 import React from "react"
-import { GetServerSideProps } from "next"
 import ReactMarkdown from "react-markdown"
 import Layout from "../../components/Layout"
 import { PostProps } from "../../components/Post"
+import {GetServerSideProps} from "next";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const post = {
-    id: "1",
-    title: "Prisma is the perfect ORM for Next.js",
-    content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-    published: false,
-    author: {
-      name: "Nikolas Burk",
-      email: "burk@prisma.io",
-    },
-  }
-  return {
-    props: post,
-  }
-}
-
+export const getServerSideProps: GetServerSideProps = async ({ req, params }) => {
+    try {
+        const protocol = req.headers['x-forwarded-proto'] || 'http'
+        const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
+        const res = await fetch(baseUrl + '/api/post/' + params?.id, {
+            method: 'GET'
+        });
+        const post = await res.json()
+        return {
+            props: { ...post }
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
 const Post: React.FC<PostProps> = (props) => {
   let title = props.title
   if (!props.published) {
