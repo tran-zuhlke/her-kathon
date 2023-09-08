@@ -1,25 +1,24 @@
 import React from "react"
-import { GetStaticProps } from "next"
+import {GetServerSideProps} from "next"
 import Layout from "../components/Layout"
 import Post, { PostProps } from "../components/Post"
 
-export const getStaticProps: GetStaticProps = async () => {
-  const feed = [
-    {
-      id: "1",
-      title: "Prisma is the perfect ORM for Next.js",
-      content: "[Prisma](https://github.com/prisma/prisma) and Next.js go _great_ together!",
-      published: false,
-      author: {
-        name: "Nikolas Burk",
-        email: "burk@prisma.io",
-      },
-    },
-  ]
-  return { 
-    props: { feed }, 
-    revalidate: 10 
+export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+
+  try {
+    const protocol = req.headers['x-forwarded-proto'] || 'http'
+    const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
+    const res = await fetch(baseUrl + '/api/post', {
+      method: 'GET'
+    });
+    const feed = await res.json()
+    return {
+      props: { feed }
+    }
+  } catch (error) {
+    console.error(error);
   }
+
 }
 
 type Props = {
