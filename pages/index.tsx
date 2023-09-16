@@ -10,12 +10,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   try {
     const protocol = req.headers['x-forwarded-proto'] || 'http'
     const baseUrl = req ? `${protocol}://${req.headers.host}` : ''
-    const res = await fetch(baseUrl + '/api/post', {
+    const res = await fetch(baseUrl + '/api/live', {
       method: 'GET'
     });
-    const feed = await res.json()
+    const data = await res.json()
     return {
-      props: { feed }
+      props: { data }
     }
   } catch (error) {
     console.error(error);
@@ -24,8 +24,25 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 }
 
 type Props = {
-  feed: PostProps[]
+  data: LiveProps
 }
+
+export type LiveProps = {
+  totalTime: number;
+  totalView: number;
+  brands: string[];
+  customerData: {
+    location: string;
+    malePercent: number;
+    femalePercent: number;
+  }
+  platformData: {
+    liveTime: number;
+    deals: number;
+    brand: string ;
+    platform: string ;
+  }[]
+};
 
 const Blog: React.FC<Props> = (props) => {
   return (
@@ -33,21 +50,39 @@ const Blog: React.FC<Props> = (props) => {
       <div className='popup-background'>
         <div className='popup-container white-border'>
           <h2 className='text-center'>Phiên LIVE đã kết thúc</h2>
-          <p className='text-center' style={{color: 'rgb(142 142 142)'}}>Tháng 9 16 19:00 | Được phát trực tuyến 33 giây</p>
+          <p className='text-center' style={{color: 'rgb(142 142 142)'}}>10:30 Ngày 17 Tháng 9 | Được phát trực tuyến 33 giây</p>
           <br/>
-          <div className='content-container'>
-            <div className='content-1-container'><PiUmbrellaDuotone size={120}/></div>
-            <div className='content-2-container'>
-              <div className='d-flex gap-4 justify-content-between'>
-                <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
-                <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phan tich</Button>
-              </div>
-              <hr style={{borderTop: '1px dashed'}}/>
-              <div className='d-flex gap-3'>
-                <div>Tổng số lượt xem<br/><b>1</b></div>
-                <div>Kim cương<br/><b>1</b></div>
-                <div>Flowwer mới<br/><b>1</b></div>
-                <div>Người gửi quà tặng<br/><b>1</b></div>
+          <div className='d-flex flex-column gap-4'>
+            {props.data.platformData.map(_ =>
+                <div className='content-container'>
+                  <div className='content-1-container'><PiUmbrellaDuotone size={120}/></div>
+                  <div className='content-2-container'>
+                    <div className='d-flex gap-4 justify-content-between'>
+                      <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
+                      <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phan tich</Button>
+                    </div>
+                    <hr style={{borderTop: '1px dashed'}}/>
+                    <div className='d-flex justify-content-between gap-3'>
+                      <div>Thời gian live<br/><b>{props.data.platformData[0].liveTime}</b></div>
+                      <div>Số đơn<br/><b>{props.data.platformData[0].deals}</b></div>
+                      <div>Brand<br/><b>{props.data.platformData[0].brand}</b></div>
+                      <div>Platform<br/><b>{props.data.platformData[0].platform}</b></div>
+                    </div>
+                  </div>
+                </div>
+            )}
+            <div className='content-container'>
+              <div className='content-1-container'><PiUmbrellaDuotone size={120}/></div>
+              <div className='content-2-container'>
+                <div className='d-flex gap-4 justify-content-between'>
+                  <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
+                  <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phan tich</Button>
+                </div>
+                <hr style={{borderTop: '1px dashed'}}/>
+                <div className='d-flex gap-3'>
+                  <div>Tổng thời gian live<br/><b>{props.data.totalView}</b></div>
+                  <div>Tổng số view<br/><b>{props.data.totalView}</b></div>
+                </div>
               </div>
             </div>
           </div>
@@ -64,9 +99,8 @@ const Blog: React.FC<Props> = (props) => {
         }
         .popup-container {
           width: 700px;
-          margin-top: 200px;
+          margin-top: 100px;
           height: fit-content;
-          max-height: 400px;
           padding: 36px 24px;
           background-color: rgb(37, 37, 37);
           border-radius: 16px;
