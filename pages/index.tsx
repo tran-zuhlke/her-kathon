@@ -14,8 +14,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       method: 'GET'
     });
     const data = await res.json()
-    let duration = moment.duration(data.totalTime);
     data.totalDuration = moment.utc(data.totalTime).format('HH:mm');
+    data.platformData.forEach(platform => {
+      platform.duration = moment.utc(platform.liveTime).format('HH:mm');
+    })
     return {
       props: { data }
     }
@@ -29,6 +31,14 @@ type Props = {
   data: LiveProps
 }
 
+export type PlatFormDataProps = {
+  duration: string | null;
+  liveTime: number;
+  deals: number;
+  brand: string ;
+  platform: string ;
+}
+
 export type LiveProps = {
   totalDuration: string | null;
   totalTime: number;
@@ -39,12 +49,7 @@ export type LiveProps = {
     malePercent: number;
     femalePercent: number;
   }
-  platformData: {
-    liveTime: number;
-    deals: number;
-    brand: string ;
-    platform: string ;
-  }[]
+  platformData: PlatFormDataProps[]
 };
 
 const Blog: React.FC<Props> = (props) => {
@@ -66,7 +71,7 @@ const Blog: React.FC<Props> = (props) => {
                     </div>
                     <hr style={{borderTop: '1px dashed'}}/>
                     <div className='d-flex justify-content-between gap-3'>
-                      <div>Thời gian live<br/><b>{props.data.platformData[0].liveTime}</b></div>
+                      <div>Thời gian live<br/><b>{props.data.platformData[0].duration}</b></div>
                       <div>Số đơn<br/><b>{props.data.platformData[0].deals}</b></div>
                       <div>Brand<br/><b>{props.data.platformData[0].brand}</b></div>
                       <div>Platform<br/><b>{props.data.platformData[0].platform}</b></div>
