@@ -15,9 +15,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       method: 'GET'
     });
     const data = await res.json()
-    data.totalDuration = moment.utc(data.totalTime).format('HH:mm');
+    data.totalDuration = `${data.totalTime.toLocaleString()} phút`;
     data.platformData.forEach(platform => {
-      platform.duration = moment.utc(platform.liveTime).format('HH:mm');
+      platform.duration = `${platform.liveTime} phút`;
     })
     return {
       props: { data }
