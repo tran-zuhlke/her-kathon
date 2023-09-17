@@ -1,9 +1,9 @@
 import React from "react"
 import {GetServerSideProps} from "next"
-import { PostProps } from "../components/Post"
 import {Button} from "reactstrap";
 import {PiUmbrellaDuotone} from "react-icons/pi";
 import 'bootstrap/dist/css/bootstrap.css';
+import moment from "moment";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
@@ -14,6 +14,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       method: 'GET'
     });
     const data = await res.json()
+    let duration = moment.duration(data.totalTime);
+    data.totalDuration = moment.utc(data.totalTime).format('HH:mm');
     return {
       props: { data }
     }
@@ -28,6 +30,7 @@ type Props = {
 }
 
 export type LiveProps = {
+  totalDuration: string | null;
   totalTime: number;
   totalView: number;
   brands: string[];
@@ -50,7 +53,7 @@ const Blog: React.FC<Props> = (props) => {
       <div className='popup-background'>
         <div className='popup-container white-border'>
           <h2 className='text-center'>Phiên LIVE đã kết thúc</h2>
-          <p className='text-center' style={{color: 'rgb(142 142 142)'}}>10:30 Ngày 17 Tháng 9 | Được phát trực tuyến 33 giây</p>
+          <p className='text-center' style={{color: 'rgb(142 142 142)'}}>{moment(new Date()).format('hh:mm A, DD/MM/YYYY')} | Được phát trực tuyến trong {props.data.totalDuration}</p>
           <br/>
           <div className='d-flex flex-column gap-4'>
             {props.data.platformData.map(_ =>
@@ -59,7 +62,7 @@ const Blog: React.FC<Props> = (props) => {
                   <div className='content-2-container'>
                     <div className='d-flex gap-4 justify-content-between'>
                       <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
-                      <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phan tich</Button>
+                      <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phân tích</Button>
                     </div>
                     <hr style={{borderTop: '1px dashed'}}/>
                     <div className='d-flex justify-content-between gap-3'>
@@ -76,12 +79,12 @@ const Blog: React.FC<Props> = (props) => {
               <div className='content-2-container'>
                 <div className='d-flex gap-4 justify-content-between'>
                   <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
-                  <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phan tich</Button>
+                  <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phân tích</Button>
                 </div>
                 <hr style={{borderTop: '1px dashed'}}/>
                 <div className='d-flex gap-3'>
-                  <div>Tổng thời gian live<br/><b>{props.data.totalView}</b></div>
-                  <div>Tổng số view<br/><b>{props.data.totalView}</b></div>
+                  <div>Tổng thời gian live<br/><b>{props.data.totalDuration}</b></div>
+                  <div>Tổng số view<br/><b>{props.data.totalView.toLocaleString()}</b></div>
                 </div>
               </div>
             </div>
