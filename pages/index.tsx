@@ -4,7 +4,7 @@ import {Button} from "reactstrap";
 import {PiUmbrellaDuotone} from "react-icons/pi";
 import 'bootstrap/dist/css/bootstrap.css';
 import moment from "moment";
-import Image from 'next/image'
+import {platform} from "os";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
@@ -63,11 +63,11 @@ const LivePopup: React.FC<Props> = (props) => {
           <br/>
           <div className='d-flex flex-column gap-4'>
             {props.data.platformData.map(platformData =>
-                <div key={platformData.platform} className='content-container'>
-                  <div className='content-1-container'>
-                    <PiUmbrellaDuotone size={120}/>
+                <div key={platformData.platform} className='live-summary-container'>
+                  <div className='platform-logo-container'>
+                    <div className='platform-logo' style={{backgroundImage: `url("logo-${platformData.platform.toLowerCase()}.png")`}}></div>
                   </div>
-                  <div className='content-2-container'>
+                  <div className='platform-data-container'>
                     <div className='d-flex gap-4 justify-content-between'>
                       <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
                       <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phân tích</Button>
@@ -82,9 +82,9 @@ const LivePopup: React.FC<Props> = (props) => {
                   </div>
                 </div>
             )}
-            <div className='content-container'>
-              <div className='content-1-container'><PiUmbrellaDuotone size={120}/></div>
-              <div className='content-2-container'>
+            <div className='live-summary-container'>
+              <div className='platform-logo-container'><PiUmbrellaDuotone size={120}/></div>
+              <div className='platform-data-container'>
                 <div className='d-flex gap-4 justify-content-between'>
                   <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
                   <Button style={{background: 'rgb(61,61,61)', whiteSpace: 'nowrap'}}>Xem phân tích</Button>
@@ -110,14 +110,14 @@ const LivePopup: React.FC<Props> = (props) => {
         }
         .popup-container {
           width: 700px;
-          margin-top: 100px;
+          margin: 100px 0;
           height: fit-content;
           padding: 36px 24px;
           background-color: rgb(37, 37, 37);
           border-radius: 16px;
           box-shadow: 10px 10px 5px rgb(37, 37, 37);
         }
-        .content-container {
+        .live-summary-container {
           padding: 16px;
           display: flex;
           gap: 16px;
@@ -125,14 +125,19 @@ const LivePopup: React.FC<Props> = (props) => {
           border-radius: 8px;
           background-color: rgb(45, 45, 45);
         }
-        .content-1-container {
+        .platform-logo-container {
           display: flex;
           flex-direction: column;
           justify-content: center;
           padding: 24px;
-          transform: rotate(-36deg);
         }
-        .content-2-container {
+        .platform-logo {
+          width: 120px;
+          height: 120px;
+          background-position: center;
+          background-size: cover;
+        }
+        .platform-data-container {
           width: 100%;
           flex-basis: auto;
         }
