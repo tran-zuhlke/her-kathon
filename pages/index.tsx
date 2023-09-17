@@ -4,6 +4,7 @@ import {Button} from "reactstrap";
 import {PiUmbrellaDuotone} from "react-icons/pi";
 import 'bootstrap/dist/css/bootstrap.css';
 import moment from "moment";
+import Image from 'next/image'
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
 
@@ -52,7 +53,7 @@ export type LiveProps = {
   platformData: PlatFormDataProps[]
 };
 
-const Blog: React.FC<Props> = (props) => {
+const LivePopup: React.FC<Props> = (props) => {
   return (
     <div>
       <div className='popup-background'>
@@ -61,9 +62,11 @@ const Blog: React.FC<Props> = (props) => {
           <p className='text-center' style={{color: 'rgb(142 142 142)'}}>{moment(new Date()).format('hh:mm A, DD/MM/YYYY')} | Được phát trực tuyến trong {props.data.totalDuration}</p>
           <br/>
           <div className='d-flex flex-column gap-4'>
-            {props.data.platformData.map(_ =>
-                <div className='content-container'>
-                  <div className='content-1-container'><PiUmbrellaDuotone size={120}/></div>
+            {props.data.platformData.map(platformData =>
+                <div key={platformData.platform} className='content-container'>
+                  <div className='content-1-container'>
+                    <PiUmbrellaDuotone size={120}/>
+                  </div>
                   <div className='content-2-container'>
                     <div className='d-flex gap-4 justify-content-between'>
                       <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
@@ -71,10 +74,10 @@ const Blog: React.FC<Props> = (props) => {
                     </div>
                     <hr style={{borderTop: '1px dashed'}}/>
                     <div className='d-flex justify-content-between gap-3'>
-                      <div>Thời gian live<br/><b>{props.data.platformData[0].duration}</b></div>
-                      <div>Số đơn<br/><b>{props.data.platformData[0].deals}</b></div>
-                      <div>Brand<br/><b>{props.data.platformData[0].brand}</b></div>
-                      <div>Platform<br/><b>{props.data.platformData[0].platform}</b></div>
+                      <div>Thời gian live<br/><b>{platformData.duration}</b></div>
+                      <div>Số đơn<br/><b>{platformData.deals}</b></div>
+                      <div>Brand<br/><b>{platformData.brand}</b></div>
+                      <div>Platform<br/><b>{platformData.platform}</b></div>
                     </div>
                   </div>
                 </div>
@@ -150,4 +153,4 @@ const Blog: React.FC<Props> = (props) => {
   )
 }
 
-export default Blog
+export default LivePopup
