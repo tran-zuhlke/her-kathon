@@ -83,7 +83,7 @@ const LivePopup: React.FC<Props> = (props) => {
                 </div>
             )}
             <div className='live-summary-container'>
-              <div className='platform-logo-container'><PiUmbrellaDuotone size={120}/></div>
+              <div className='platform-logo-container' style={{transform: 'rotate(-36deg)'}}><PiUmbrellaDuotone size={120}/></div>
               <div className='platform-data-container'>
                 <div className='d-flex gap-4 justify-content-between'>
                   <strong style={{margin: 'auto 0'}}>Bạn đang làm rất tốt! Hãy tiếp tục phát huy nhé!</strong>
